@@ -32,4 +32,9 @@ public class Item {
     public void setMovable(boolean movable) {
         this.movable = movable;
     }
+
+    @Override
+    public String toString() {
+        return getName();
+    }
 }

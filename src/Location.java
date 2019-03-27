@@ -4,12 +4,13 @@ public class Location {
     private String name;
     private String description;
     private Inventory inventory;
-    private HashMap<String, Location> paths;
+    private HashMap<String, Location> path;
 
-    public Location(String name, String description, Inventory inventory) {
+    public Location(String name, String description, Inventory inventory, HashMap<String, Location> paths) {
             setName(name);
             setDescription(description);
             setInventory(inventory);
+            setPath(paths);
     }
 
     public String getName() {
@@ -21,7 +22,7 @@ public class Location {
     }
 
     public String getDescription() {
-        return description;
+        return description + "\nВ локации находятся следующие предметы: " + this.getInventory().toString();
     }
 
     public void setDescription(String description) {
@@ -36,12 +37,15 @@ public class Location {
         this.inventory = inventory;
     }
 
-    public HashMap<String, Location> getPaths() {
-        return paths;
+    public HashMap<String, Location> getPath() {
+        return path;
     }
 
-    public void setPaths(HashMap<String, Location> paths) {
-        this.paths = paths;
+    public void setPath(HashMap<String, Location> path) {
+        this.path = path;
     }
 
+    public void addPath(String way, Location location) {
+        path.put(way, location);
+    }
 }
