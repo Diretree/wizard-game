@@ -10,10 +10,6 @@ public class Player {
         movesCount++;
     }
 
-    public Player() {
-
-    }
-
     public String getInventory() {
         if (inventory.getItems().isEmpty()) {
             return "Инвентарь пуст";

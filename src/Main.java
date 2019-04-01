@@ -7,57 +7,49 @@ import java.util.HashMap;
 public class Main {
 
     public static void main(String[] args) throws IOException {
-        Item chain = new Item("Цепь",
+        Item chain = new Item("цепь",
                 "Эта цепь лежит на земле в саду",
                 true);
-        Item well = new Item("Колодец",
+        Item well = new Item("колодец",
                 "Колодец в саду",
                 false);
-        Item wizard = new Item("Волшебник",
+        Item wizard = new Item("волшебник",
                 "Волшебник крепко спит на диване в гостиной...",
                 false);
-        Item bucket = new Item("Ведро",
+        Item bucket = new Item("ведро",
                 "В это ведро можно что-нибудь налить. Например, литров пять виски...",
                 true);
-        Item bottleOfWhisky = new Item("Бутылка виски",
+        Item bottleOfWhisky = new Item("бутылка виски",
                 "Уже вскрытая. И, судя по оставшемуся количеству виски внутри, кто-то хорошенько напился...",
                 true);
-        Item weldingTorch = new Item("Газовая горелка",
+        Item weldingTorch = new Item("газовая горелка",
                 "ОСТОРОЖНО! Неплохо нагревает предметы. Можно что-нибудь приварить, а можно и дом спалить...",
                 true);
-
-        ArrayList<Item> gardenItems = new ArrayList<>();
-        gardenItems.add(chain);
-        gardenItems.add(well);
-
-        ArrayList<Item> livingRoomItems = new ArrayList<>();
-        livingRoomItems.add(wizard);
-        livingRoomItems.add(bucket);
-        livingRoomItems.add(bottleOfWhisky);
-
-        ArrayList<Item> atticItems = new ArrayList<>();
-        atticItems.add(weldingTorch);
 
         ArrayList<Item> playerItems = new ArrayList<>();
 
         Inventory playerInventory = new Inventory(playerItems);
-        Inventory gardenInventory = new Inventory(gardenItems);
-        Inventory livingRoomInventory = new Inventory(livingRoomItems);
-        Inventory atticInventory = new Inventory(atticItems);
 
         HashMap<String, Location> livingRoomPaths = new HashMap<>();
         HashMap<String, Location> gardenPaths = new HashMap<>();
         HashMap<String, Location> atticPaths = new HashMap<>();
 
         Location garden = new Location("Сад",
-                "Вы в саду. Колодец в наличии!", gardenInventory,
+                "Вы в саду. Колодец в наличии!",
                 gardenPaths);
         Location livingRoom = new Location("Гостиная",
-                "Вы находитесь в гостиной. И откуда на диване взялся волшебник?!", livingRoomInventory,
+                "Вы находитесь в гостиной. И откуда на диване взялся волшебник?!",
                 livingRoomPaths);
         Location attic = new Location("Чердак",
-                "Вы попали на чердак. Вполне себе эталонный грязный и пыльный чердак.", atticInventory,
+                "Вы попали на чердак. Вполне себе эталонный грязный и пыльный чердак.",
                 atticPaths);
+
+        garden.getInventory().addInitialItem(chain);
+        garden.getInventory().addInitialItem(well);
+        livingRoom.getInventory().addInitialItem(wizard);
+        livingRoom.getInventory().addInitialItem(bottleOfWhisky);
+        livingRoom.getInventory().addInitialItem(bucket);
+        attic.getInventory().addInitialItem(weldingTorch);
 
         garden.addPath("запад", livingRoom);
         livingRoom.addPath("восток", garden);
@@ -70,7 +62,7 @@ public class Main {
 
         for (int moves = 0; moves < player.getMovesCount(); moves++) {
             String userInput = reader.readLine();
-            String[] userInputSplitted = userInput.split(" ");
+            String[] userInputSplit = userInput.split(" ");
 
             if (userInput.equals("осмотреться")) {
                 player.lookAround();
@@ -80,19 +72,33 @@ public class Main {
                 System.out.println(player.getInventory());
                 continue;
             }
-            else if(userInputSplitted[0].equals("идти")) {
-                Location newLoc = player.getCurrentLocation().getPath().get(userInputSplitted[1]);
+            else if(userInputSplit[0].equals("идти")) {
+                Location newLoc = player.getCurrentLocation().getPath().get(userInputSplit[1]);
                 player.setCurrentLocation(newLoc);
             }
-            else if(userInputSplitted[0].equals("взять")) {
-                Item itemToAddIntoInventory = player.getCurrentLocation().getInventory().find(userInputSplitted[1]);
-                playerInventory.put(itemToAddIntoInventory);
+            else if(userInputSplit[0].equals("взять")) {
+                Item itemToAddIntoInventory = player.getCurrentLocation().getInventory().find(userInput.substring(userInputSplit[0].length()+1));
+                playerInventory.putFromPlayer(itemToAddIntoInventory);
+                player.getCurrentLocation().getInventory().removeItemFromInventory(itemToAddIntoInventory);
             }
             else if(userInput.equals("выйти из игры")) {
                 System.exit(0);
             }
+            else if(userInput.equals("помощь")) {
+                System.out.println("Список доступных команд:" +
+                                    "\nосмотреться - вы можете оглядеться вокруг, понять своё местонахождение и узнать детали окружающей обстановки;" +
+                                    "\nинвентарь - посмотреть содержимое своего инвентаря;" +
+                                    "\nидти восток - попробовать пойти на восток от текущего местоположения;" +
+                                    "\nидти запад - попробовать пойти на запад от текущего местоположения;" +
+                                    "\nидти вверх - попробовать забраться повыше;" +
+                                    "\nидти вниз - спуститься;" +
+                                    "\nвзять <название предмета> - подобрать предмет и положить в свой инвентарь." +
+                                    "\n====================================================");
+            }
             else {
-                System.out.println("Вы ввели: " + userInput + "\nНе могу выполнить это действие.");
+                System.out.println("Вы ввели: " + userInput + "\nНе могу выполнить это действие." +
+                                    "\nВведите 'помощь' для вывода списка доступных команд." +
+                                    "\n====================================================");
             }
             continue;
         }

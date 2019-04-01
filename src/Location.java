@@ -6,11 +6,12 @@ public class Location {
     private Inventory inventory;
     private HashMap<String, Location> path;
 
-    public Location(String name, String description, Inventory inventory, HashMap<String, Location> paths) {
+    public Location(String name, String description, HashMap<String, Location> paths) {
             setName(name);
             setDescription(description);
-            setInventory(inventory);
             setPath(paths);
+
+            inventory = new Inventory();
     }
 
     public String getName() {
