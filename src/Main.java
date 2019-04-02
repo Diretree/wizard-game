@@ -69,7 +69,7 @@ public class Main {
                 continue;
             }
             else if(userInput.equals("инвентарь")) {
-                System.out.println(player.getInventory());
+                System.out.println(player.showInventory());
                 continue;
             }
             else if(userInputSplit[0].equals("идти")) {
@@ -77,9 +77,24 @@ public class Main {
                 player.setCurrentLocation(newLoc);
             }
             else if(userInputSplit[0].equals("взять")) {
-                Item itemToAddIntoInventory = player.getCurrentLocation().getInventory().find(userInput.substring(userInputSplit[0].length()+1));
-                playerInventory.putFromPlayer(itemToAddIntoInventory);
-                player.getCurrentLocation().getInventory().removeItemFromInventory(itemToAddIntoInventory);
+                player.take(userInput.substring(userInputSplit[0].length()+1));
+            }
+            else if(userInputSplit[0].equals("использовать")) {
+                if (userInputSplit.length == 3) {
+                    try {
+                        player.use(userInputSplit[1], userInputSplit[2]);
+                    } catch (ArrayIndexOutOfBoundsException ex) {
+                        System.out.println("Пожалуйста, укажите два предмета для использования!");
+                    }
+                }
+                else {
+                    try {
+                        player.use(userInputSplit[1] + " " + userInputSplit[2] + " " +userInputSplit[3], userInputSplit[4]);
+                    }
+                    catch (ArrayIndexOutOfBoundsException ex) {
+                        System.out.println("Пожалуйста, укажите два предмета для использования!");
+                    }
+                }
             }
             else if(userInput.equals("выйти из игры")) {
                 System.exit(0);

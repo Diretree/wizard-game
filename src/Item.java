@@ -29,6 +29,7 @@ public class Item {
         return movable;
     }
 
+
     public void setMovable(boolean movable) {
         this.movable = movable;
     }
